@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    ADC/3ADCs_DMA/system_stm32f10x.c
+  * @file    TIM/7PWM_Output/system_stm32f10x.c
   * @author  MCD Application Team
   * @version V3.5.0
   * @date    08-April-2011
@@ -111,8 +111,8 @@
 /* #define SYSCLK_FREQ_24MHz  24000000 */ 
 /* #define SYSCLK_FREQ_36MHz  36000000 */
 /* #define SYSCLK_FREQ_48MHz  48000000 */
- #define SYSCLK_FREQ_56MHz  56000000
-/* #define SYSCLK_FREQ_72MHz  72000000 */
+/* #define SYSCLK_FREQ_56MHz  56000000 */
+#define SYSCLK_FREQ_72MHz  72000000
 #endif
 
 /*!< Uncomment the following line if you need to use external SRAM mounted

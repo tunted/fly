@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    ADC/3ADCs_DMA/stm32f10x_it.c 
+  * @file    TIM/7PWM_Output/stm32f10x_it.c 
   * @author  MCD Application Team
   * @version V3.5.0
   * @date    08-April-2011
@@ -28,7 +28,7 @@
   * @{
   */
 
-/** @addtogroup ADC_3ADCs_DMA
+/** @addtogroup TIM_7PWM_Output
   * @{
   */ 
 
@@ -36,8 +36,6 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-__IO uint16_t ADC2ConvertedValue;
-
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -51,8 +49,7 @@ __IO uint16_t ADC2ConvertedValue;
   * @retval None
   */
 void NMI_Handler(void)
-{
-}
+{}
 
 /**
   * @brief  This function handles Hard Fault exception.
@@ -63,8 +60,7 @@ void HardFault_Handler(void)
 {
   /* Go to infinite loop when Hard Fault exception occurs */
   while (1)
-  {
-  }
+  {}
 }
 
 /**
@@ -76,8 +72,7 @@ void MemManage_Handler(void)
 {
   /* Go to infinite loop when Memory Manage exception occurs */
   while (1)
-  {
-  }
+  {}
 }
 
 /**
@@ -89,8 +84,7 @@ void BusFault_Handler(void)
 {
   /* Go to infinite loop when Bus Fault exception occurs */
   while (1)
-  {
-  }
+  {}
 }
 
 /**
@@ -102,17 +96,7 @@ void UsageFault_Handler(void)
 {
   /* Go to infinite loop when Usage Fault exception occurs */
   while (1)
-  {
-  }
-}
-
-/**
-  * @brief  This function handles SVCall exception.
-  * @param  None
-  * @retval None
-  */
-void SVC_Handler(void)
-{
+  {}
 }
 
 /**
@@ -121,8 +105,15 @@ void SVC_Handler(void)
   * @retval None
   */
 void DebugMon_Handler(void)
-{
-}
+{}
+
+/**
+  * @brief  This function handles SVCall exception.
+  * @param  None
+  * @retval None
+  */
+void SVC_Handler(void)
+{}
 
 /**
   * @brief  This function handles PendSV_Handler exception.
@@ -130,8 +121,7 @@ void DebugMon_Handler(void)
   * @retval None
   */
 void PendSV_Handler(void)
-{
-}
+{}
 
 /**
   * @brief  This function handles SysTick Handler.
@@ -139,14 +129,7 @@ void PendSV_Handler(void)
   * @retval None
   */
 void SysTick_Handler(void)
-{
-}
-
-/******************************************************************************/
-/*            STM32F10x Peripherals Interrupt Handlers                        */
-/******************************************************************************/
- 
-
+{}
 
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */

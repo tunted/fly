@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    ADC/3ADCs_DMA/stm32f10x_it.h 
+  * @file    TIM/7PWM_Output/stm32f10x_it.h 
   * @author  MCD Application Team
   * @version V3.5.0
   * @date    08-April-2011
@@ -40,7 +40,6 @@ void SVC_Handler(void);
 void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
-void ADC1_2_IRQHandler(void);
 					 
 #endif /* __STM32F10x_IT_H */
 

@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    ADC/3ADCs_DMA/stm32f10x_conf.h 
+  * @file    TIM/7PWM_Output/stm32f10x_conf.h 
   * @author  MCD Application Team
   * @version V3.5.0
   * @date    08-April-2011
@@ -48,6 +48,7 @@
 #include "stm32f10x_usart.h"
 #include "stm32f10x_wwdg.h"
 #include "misc.h" /* High level functions for NVIC and SysTick (add-on to CMSIS functions) */
+
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
