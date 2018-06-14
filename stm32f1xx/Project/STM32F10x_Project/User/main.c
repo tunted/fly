@@ -35,6 +35,16 @@
 #define ADC1_DR_Address    ((uint32_t)0x4001244C)
 
 /* Private system constants --------------------------------------------------*/
+static const float PID1_KP        = 0.1;
+static const float PID1_KI        = 0.05;
+static const float PID1_KD        = 0.001;
+
+static const float PID2_KP        = 0.2;
+static const float PID2_KI        = 0.003;
+static const float PID2_KD        = 0.001;
+
+
+/* Private system constants --------------------------------------------------*/
 static const float HALL_SENSOR_CALIB_FACTOR       = 0.00042;
 static const uint32_t COIL_DRIVER_PWM_FREQ        = 5000;
 static const uint32_t SYSTEM_TICK_FREQ            = 1000;
@@ -45,11 +55,12 @@ ADC_InitTypeDef ADC_InitStructure;
 DMA_InitTypeDef DMA_InitStructure;
 
 /* Private variables ---------------------------------------------------------*/
-static systick_task_controller_t task1s;
-static systick_task_controller_t task2s;
-static systick_task_controller_t task4s;
-static systick_task_controller_t task8s;
+static systick_task_controller_t task10ms;
 
+static systick_task_controller_t task5s;
+
+/* Private variables ---------------------------------------------------------*/
+static pid_controller_t pid_controller_1, pid_controller_2; 
 
 /* Private variables ---------------------------------------------------------*/
 __IO uint16_t ADC1ConvertedValue[4] = {0, 0, 0, 0};
@@ -94,11 +105,13 @@ int main(void)
   SysTick_Config(SystemCoreClock / SYSTEM_TICK_FREQ);
 
   /* User config for hall sensor ---------------------------------------------*/
-  systick_add_task_controller(&task1s, 1000);
-  systick_add_task_controller(&task2s, 2000);
-  systick_add_task_controller(&task4s, 4000);
-  systick_add_task_controller(&task8s, 8000);
+  systick_add_task_controller(&task10ms, 10);
+  systick_add_task_controller(&task5s, 5000);
 
+
+  /* User config pid controller ----------------------------------------------*/
+  pid_controller_init(&pid_controller_1, PID1_KP, PID1_KI, PID1_KD);
+  pid_controller_init(&pid_controller_2, PID2_KP, PID2_KI, PID2_KD);
 
   /* User config for hall sensor ---------------------------------------------*/
   hall_sensor_init(&sensor1, HALL_SENSOR_CALIB_FACTOR);
@@ -112,20 +125,16 @@ int main(void)
  
   while (1)
   {
-    if (true == systick_check_task_enabled(&task1s))
+    if (true == systick_check_task_enabled(&task10ms))
     {
+      pid_controller_routine(&pid_controller_1, 0.01, 1);
+      pid_controller_routine(&pid_controller_2, 0.01, 4);
     }
 
-    if (true == systick_check_task_enabled(&task2s))
+    if (true == systick_check_task_enabled(&task5s))
     {
-    }
-
-    if (true == systick_check_task_enabled(&task4s))
-    {
-    }
-
-    if (true == systick_check_task_enabled(&task8s))
-    {
+      pid_controller_set_ref(&pid_controller_1, 5);
+      pid_controller_set_ref(&pid_controller_2, 5);
     }
 
   }
