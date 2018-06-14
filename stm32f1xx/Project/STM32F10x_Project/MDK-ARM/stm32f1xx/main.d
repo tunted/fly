@@ -32,3 +32,5 @@
 .\stm32f1xx\main.o: ..\Sources\pid_controller.h
 .\stm32f1xx\main.o: ..\Sources\hall_sensor.h
 .\stm32f1xx\main.o: ..\Sources\coil_driver.h
+.\stm32f1xx\main.o: ..\Sources\systick.h
+.\stm32f1xx\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

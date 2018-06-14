@@ -44,9 +44,17 @@ static const uint32_t SYSTEM_TICK_FREQ            = 1000;
 ADC_InitTypeDef ADC_InitStructure;
 DMA_InitTypeDef DMA_InitStructure;
 
+/* Private variables ---------------------------------------------------------*/
+static systick_task_controller_t task1s;
+static systick_task_controller_t task2s;
+static systick_task_controller_t task4s;
+static systick_task_controller_t task8s;
+
+
+/* Private variables ---------------------------------------------------------*/
 __IO uint16_t ADC1ConvertedValue[4] = {0, 0, 0, 0};
-hall_sensor_t sensor1, sensor2, sensor3, sensor4;
-coil_driver_t coil_driver_1, coil_driver_2;
+static hall_sensor_t sensor1, sensor2, sensor3, sensor4;
+static coil_driver_t coil_driver_1, coil_driver_2;
 
 /* Private function prototypes -----------------------------------------------*/
 static void RCC_Configuration(void);
@@ -86,6 +94,13 @@ int main(void)
   SysTick_Config(SystemCoreClock / SYSTEM_TICK_FREQ);
 
   /* User config for hall sensor ---------------------------------------------*/
+  systick_add_task_controller(&task1s, 1000);
+  systick_add_task_controller(&task2s, 2000);
+  systick_add_task_controller(&task4s, 4000);
+  systick_add_task_controller(&task8s, 8000);
+
+
+  /* User config for hall sensor ---------------------------------------------*/
   hall_sensor_init(&sensor1, HALL_SENSOR_CALIB_FACTOR);
   hall_sensor_init(&sensor2, HALL_SENSOR_CALIB_FACTOR);
   hall_sensor_init(&sensor3, HALL_SENSOR_CALIB_FACTOR);
@@ -97,6 +112,21 @@ int main(void)
  
   while (1)
   {
+    if (true == systick_check_task_enabled(&task1s))
+    {
+    }
+
+    if (true == systick_check_task_enabled(&task2s))
+    {
+    }
+
+    if (true == systick_check_task_enabled(&task4s))
+    {
+    }
+
+    if (true == systick_check_task_enabled(&task8s))
+    {
+    }
 
   }
 }

@@ -23,6 +23,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
+#include "systick.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
   * @{
@@ -140,6 +141,7 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
+  systick_handler();  
 }
 
 /******************************************************************************/

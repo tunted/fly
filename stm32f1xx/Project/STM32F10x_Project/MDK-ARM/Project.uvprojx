@@ -566,6 +566,11 @@
               <FileType>1</FileType>
               <FilePath>..\Sources\hall_sensor.c</FilePath>
             </File>
+            <File>
+              <FileName>systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Sources\systick.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
