@@ -30,3 +30,5 @@
 .\stm32f1xx\main.o: ..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
 .\stm32f1xx\main.o: ..\Sources\includes.h
 .\stm32f1xx\main.o: ..\Sources\pid_controller.h
+.\stm32f1xx\main.o: ..\Sources\hall_sensor.h
+.\stm32f1xx\main.o: ..\Sources\coil_driver.h

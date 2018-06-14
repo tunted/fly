@@ -34,17 +34,24 @@
 /* Private define ------------------------------------------------------------*/
 #define ADC1_DR_Address    ((uint32_t)0x4001244C)
 
+/* Private system constants --------------------------------------------------*/
+static const float HALL_SENSOR_CALIB_FACTOR       = 0.00042;
+static const uint32_t COIL_DRIVER_PWM_FREQUENcY   = 5000;
+
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 ADC_InitTypeDef ADC_InitStructure;
 DMA_InitTypeDef DMA_InitStructure;
+
 __IO uint16_t ADC1ConvertedValue[4] = {0, 0, 0, 0};
-// __IO uint16_t ADC1ConvertedValue[2];
+hall_sensor_t sensor1, sensor2, sensor3, sensor4;
+coil_driver_t coil_driver_1, coil_driver_2;
 
 /* Private function prototypes -----------------------------------------------*/
 static void RCC_Configuration(void);
 static void GPIO_Configuration(void);
 static void ADC_DMA_Configuration(void);
+static void TIM_PWM_Configuration(void);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -71,8 +78,22 @@ int main(void)
   /* ADC configuration with DMA support --------------------------------------*/
   ADC_DMA_Configuration();
 
+  /* TIM configuration for pwm function --------------------------------------*/
+  TIM_PWM_Configuration();
+
+  /* User config for hall sensor ---------------------------------------------*/
+  hall_sensor_init(&sensor1, HALL_SENSOR_CALIB_FACTOR);
+  hall_sensor_init(&sensor2, HALL_SENSOR_CALIB_FACTOR);
+  hall_sensor_init(&sensor3, HALL_SENSOR_CALIB_FACTOR);
+  hall_sensor_init(&sensor4, HALL_SENSOR_CALIB_FACTOR);
+
+  /* User config for coil driver---------------------------------------------*/
+  coil_driver_init(&coil_driver_1, TIM1, 1, 2);
+  coil_driver_init(&coil_driver_2, TIM1, 3, 4);
+ 
   while (1)
   {
+
   }
 }
 
@@ -93,7 +114,15 @@ static void RCC_Configuration(void)
 
   /* Enable ADC1 and 
 	GPIOA clocks */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1,   ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,  ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1,   ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,   ENABLE);
+
+  /* TIM1, GPIOA, GPIOB, GPIOE and AFIO clocks enable */
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOE|
+                         RCC_APB2Periph_GPIOB |RCC_APB2Periph_AFIO, ENABLE);
+
 }
 
 /**
@@ -110,6 +139,13 @@ static void GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_6 | GPIO_Pin_7;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+  /* GPIOA Configuration: Channel 1, 2 and 3 as alternate function push-pull */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+
 }
 
 static void ADC_DMA_Configuration(void){
@@ -172,6 +208,55 @@ static void ADC_DMA_Configuration(void){
   ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 
 }
+
+
+static void TIM_PWM_Configuration(void)
+{
+  TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+  TIM_OCInitTypeDef  TIM_OCInitStructure;
+
+  /* Compute the value to be set in ARR regiter to generate signal frequency at default*/
+  uint16_t TimerPeriod = (SystemCoreClock / COIL_DRIVER_PWM_FREQUENcY) - 1;
+
+
+  /* Time Base configuration */
+  TIM_TimeBaseStructure.TIM_Prescaler = 0;
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseStructure.TIM_Period = TimerPeriod;
+  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+  TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+
+  TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
+
+  /* Channel 1, 2,3 and 4 Configuration in PWM mode */
+	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+  TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
+  TIM_OCInitStructure.TIM_Pulse = 0;
+  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;
+  TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+  TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
+  TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
+
+  TIM_OC1Init(TIM1, &TIM_OCInitStructure);
+
+  TIM_OCInitStructure.TIM_Pulse = 0;
+  TIM_OC2Init(TIM1, &TIM_OCInitStructure);
+
+  TIM_OCInitStructure.TIM_Pulse = 0;
+  TIM_OC3Init(TIM1, &TIM_OCInitStructure);
+
+  TIM_OCInitStructure.TIM_Pulse = 0;
+  TIM_OC4Init(TIM1, &TIM_OCInitStructure);
+
+  /* TIM1 counter enable */
+  TIM_Cmd(TIM1, ENABLE);
+
+  /* TIM1 Main Output Enable */
+  TIM_CtrlPWMOutputs(TIM1, ENABLE);
+
+}
+
 
 #ifdef  USE_FULL_ASSERT
 

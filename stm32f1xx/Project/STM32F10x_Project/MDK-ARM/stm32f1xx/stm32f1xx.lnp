@@ -28,6 +28,8 @@
 ".\stm32f1xx\startup_stm32f10x_md_vl.o"
 ".\stm32f1xx\system_stm32f10x.o"
 ".\stm32f1xx\pid_controller.o"
+".\stm32f1xx\coil_driver.o"
+".\stm32f1xx\hall_sensor.o"
 --library_type=microlib --strict --scatter ".\stm32f1xx\stm32f1xx.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
