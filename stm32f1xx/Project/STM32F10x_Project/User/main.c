@@ -36,7 +36,8 @@
 
 /* Private system constants --------------------------------------------------*/
 static const float HALL_SENSOR_CALIB_FACTOR       = 0.00042;
-static const uint32_t COIL_DRIVER_PWM_FREQUENcY   = 5000;
+static const uint32_t COIL_DRIVER_PWM_FREQ        = 5000;
+static const uint32_t SYSTEM_TICK_FREQ            = 1000;
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -82,6 +83,9 @@ int main(void)
   TIM_PWM_Configuration();
 
   /* User config for hall sensor ---------------------------------------------*/
+  SysTick_Config(SystemCoreClock / SYSTEM_TICK_FREQ);
+
+  /* User config for hall sensor ---------------------------------------------*/
   hall_sensor_init(&sensor1, HALL_SENSOR_CALIB_FACTOR);
   hall_sensor_init(&sensor2, HALL_SENSOR_CALIB_FACTOR);
   hall_sensor_init(&sensor3, HALL_SENSOR_CALIB_FACTOR);
@@ -118,10 +122,6 @@ static void RCC_Configuration(void)
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,  ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1,   ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,   ENABLE);
-
-  /* TIM1, GPIOA, GPIOB, GPIOE and AFIO clocks enable */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOE|
-                         RCC_APB2Periph_GPIOB |RCC_APB2Periph_AFIO, ENABLE);
 
 }
 
@@ -178,13 +178,9 @@ static void ADC_DMA_Configuration(void){
 
   /* ADC1 regular channels configuration */ 
   ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_239Cycles5);    
-
   ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 2, ADC_SampleTime_239Cycles5);    
-  // ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 2, ADC_SampleTime_239Cycles5);    
   ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 3, ADC_SampleTime_239Cycles5);    
   ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 4, ADC_SampleTime_239Cycles5);    
-  // ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 4, ADC_SampleTime_239Cycles5);    
-
 
   /* Enable ADC1 DMA */
   ADC_DMACmd(ADC1, ENABLE);
@@ -216,7 +212,7 @@ static void TIM_PWM_Configuration(void)
   TIM_OCInitTypeDef  TIM_OCInitStructure;
 
   /* Compute the value to be set in ARR regiter to generate signal frequency at default*/
-  uint16_t TimerPeriod = (SystemCoreClock / COIL_DRIVER_PWM_FREQUENcY) - 1;
+  uint16_t TimerPeriod = (SystemCoreClock / COIL_DRIVER_PWM_FREQ) - 1;
 
 
   /* Time Base configuration */
